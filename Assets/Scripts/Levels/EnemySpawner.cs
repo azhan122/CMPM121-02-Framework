@@ -63,17 +63,35 @@ public class EnemySpawner : MonoBehaviour
 
     IEnumerator SpawnZombie()
     {
+        // choose a random spawn point
         SpawnPoint spawn_point = SpawnPoints[Random.Range(0, SpawnPoints.Length)];
         Vector2 offset = Random.insideUnitCircle * 1.8f;
-                
         Vector3 initial_position = spawn_point.transform.position + new Vector3(offset.x, offset.y, 0);
+
+        // create enemy instance
         GameObject new_enemy = Instantiate(enemy, initial_position, Quaternion.identity);
 
-        new_enemy.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.enemySpriteManager.Get(0);
+        // get enemy data from DataManager 
+        DataManager dm = FindFirstObjectByType<DataManager>();
+        var enemyData = dm.enemyMap["zombie"];
+
+        // get stats from JSON
+        int spriteIndex = (int)enemyData["sprite"];
+        int hp = (int)enemyData["hp"];
+        int speed = (int)enemyData["speed"];
+
+        // apply sprite from sprite manager
+        new_enemy.GetComponent<SpriteRenderer>().sprite =
+        GameManager.Instance.enemySpriteManager.Get(spriteIndex);
+
+        // apply stats to enemy controller
         EnemyController en = new_enemy.GetComponent<EnemyController>();
-        en.hp = new Hittable(50, Hittable.Team.MONSTERS, new_enemy);
-        en.speed = 10;
+        en.hp = new Hittable(hp, Hittable.Team.MONSTERS, new_enemy);
+        en.speed = speed;
+
+        // tie enemy to GameManager
         GameManager.Instance.AddEnemy(new_enemy);
+
         yield return new WaitForSeconds(0.5f);
     }
 }
