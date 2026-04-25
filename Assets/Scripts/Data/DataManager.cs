@@ -23,12 +23,12 @@ public class DataManager : MonoBehaviour
      // reads json files and parses them
     void LoadData()
     {
-        // load and parse level definitions
-        string levelsText = Resources.Load<TextAsset>("levels").text;
-        levelData = JsonConvert.DeserializeObject<List<JObject>>(levelsText);
+        // load level and enemy definitions
+        TextAsset levelsFile = Resources.Load<TextAsset>("levels");
+        TextAsset enemiesFile = Resources.Load<TextAsset>("enemies");
 
-        // load and parse enemy definitions
-        string enemiesText = Resources.Load<TextAsset>("enemies").text;
-        enemyData = JsonConvert.DeserializeObject<List<JObject>>(enemiesText);
+        // parse level and enemy definitions
+        levelData = JsonConvert.DeserializeObject<List<JObject>>(levelsFile.text);
+        enemyData = JsonConvert.DeserializeObject<List<JObject>>(enemiesFile.text);
     }
 }
