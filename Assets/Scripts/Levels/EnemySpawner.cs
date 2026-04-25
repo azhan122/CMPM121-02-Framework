@@ -55,13 +55,13 @@ public class EnemySpawner : MonoBehaviour
         GameManager.Instance.state = GameManager.GameState.INWAVE;
         for (int i = 0; i < 10; ++i)
         {
-            yield return SpawnZombie();
+            yield return SpawnEnemy("zombie");
         }
         yield return new WaitWhile(() => GameManager.Instance.enemy_count > 0);
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
     }
 
-    IEnumerator SpawnZombie()
+    IEnumerator SpawnEnemy(string enemyName)
     {
         // choose a random spawn point
         SpawnPoint spawn_point = SpawnPoints[Random.Range(0, SpawnPoints.Length)];
@@ -73,12 +73,13 @@ public class EnemySpawner : MonoBehaviour
 
         // get enemy data from DataManager 
         DataManager dm = FindFirstObjectByType<DataManager>();
-        var enemyData = dm.enemyMap["zombie"];
+        var enemyData = dm.enemyMap[enemyName];
 
         // get stats from JSON
         int spriteIndex = (int)enemyData["sprite"];
         int hp = (int)enemyData["hp"];
         int speed = (int)enemyData["speed"];
+        // damage still handled inside of EnemyController for now
 
         // apply sprite from sprite manager
         new_enemy.GetComponent<SpriteRenderer>().sprite =
