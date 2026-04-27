@@ -94,6 +94,8 @@ public class EnemySpawner : MonoBehaviour
             // evaluate using dll
             int count = RPNEvaluator.RPNEvaluator.Evaluate(countExpr, vars);
 
+            //Debug.Log($"Wave {currentWave}: Spawning {count} {enemyName}");
+
             for (int i = 0; i < count; i++)
             {
                 yield return SpawnEnemy(enemyName);
@@ -101,6 +103,9 @@ public class EnemySpawner : MonoBehaviour
         }
         yield return new WaitWhile(() => GameManager.Instance.enemy_count > 0);
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
+
+        // count waves
+        currentWave++;
     }
 
     IEnumerator SpawnEnemy(string enemyName)
@@ -113,9 +118,8 @@ public class EnemySpawner : MonoBehaviour
         // create enemy instance
         GameObject new_enemy = Instantiate(enemy, initial_position, Quaternion.identity);
 
-        // get enemy data from DataManager 
-        DataManager dm = FindFirstObjectByType<DataManager>();
-        var enemyData = dm.enemyMap[enemyName];
+        // get enemy data 
+        var enemyData = this.dm.enemyMap[enemyName];
 
         // get stats from json
         int spriteIndex = (int)enemyData["sprite"];
