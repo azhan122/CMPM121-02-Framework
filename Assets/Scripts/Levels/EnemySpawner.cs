@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 using System.Linq;
+using RPNEvaluator;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class EnemySpawner : MonoBehaviour
 
     // currently selected level data
     JObject currentLevel;
+
+    // wave counter
+    int currentWave = 1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -74,11 +78,15 @@ public class EnemySpawner : MonoBehaviour
         {
             string enemyName = spawn["enemy"].ToString();
 
-            // spawn 3 of every type for testing
-            for (int i = 0; i < 3; i++)
-            {
-                yield return SpawnEnemy(enemyName);
-            }
+            // get count expression from json
+            string countExpr = spawn["count"].ToString();
+
+            // get base value from enemy definition
+            int baseHp = (int)dm.enemyMap[enemyName]["hp"];
+
+            // evaluate using dll
+            int count = RPNEvaluator.RPNEvaluator.Evaluate(countExpr, vars);
+
         }
         yield return new WaitWhile(() => GameManager.Instance.enemy_count > 0);
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
