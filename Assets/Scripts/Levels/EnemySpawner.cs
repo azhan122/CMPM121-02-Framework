@@ -94,8 +94,10 @@ public class EnemySpawner : MonoBehaviour
             // evaluate using dll
             int count = RPNEvaluator.RPNEvaluator.Evaluate(countExpr, vars);
 
+            // Enemy spawn count per wave for debugging
             //Debug.Log($"Wave {currentWave}: Spawning {count} {enemyName}");
 
+            //yield return SpawnEnemyGroup(spawn, enemyName, count);
             for (int i = 0; i < count; i++)
             {
                 yield return SpawnEnemy(enemyName);
@@ -141,4 +143,10 @@ public class EnemySpawner : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
     }
+
+    // IEnumerator SpawnEnemyGroup(JToken spawn, string enemyName, int count)
+    // {
+    //     // working on this
+    // }
+
 }
