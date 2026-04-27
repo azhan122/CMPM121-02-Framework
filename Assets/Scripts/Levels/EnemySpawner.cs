@@ -84,9 +84,20 @@ public class EnemySpawner : MonoBehaviour
             // get base value from enemy definition
             int baseHp = (int)dm.enemyMap[enemyName]["hp"];
 
+            // variables for RPN
+            Dictionary<string, int> vars = new Dictionary<string, int>()
+            {
+                { "wave", currentWave },
+                { "base", baseHp }
+            };
+
             // evaluate using dll
             int count = RPNEvaluator.RPNEvaluator.Evaluate(countExpr, vars);
 
+            for (int i = 0; i < count; i++)
+            {
+                yield return SpawnEnemy(enemyName);
+            }
         }
         yield return new WaitWhile(() => GameManager.Instance.enemy_count > 0);
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
