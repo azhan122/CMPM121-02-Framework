@@ -14,13 +14,22 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemy;
     public SpawnPoint[] SpawnPoints;    
 
+    // reference to data manager
+    DataManager dm;
+
+    // currently selected level data
+    JObject currentLevel;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
-    {
+    {   
+        // get reference to DataManager
+        dm = FindFirstObjectByType<DataManager>();
+
         GameObject selector = Instantiate(button, level_selector.transform);
         selector.transform.localPosition = new Vector3(0, 130);
         selector.GetComponent<MenuSelectorController>().spawner = this;
-        selector.GetComponent<MenuSelectorController>().SetLevel("Start");
+        selector.GetComponent<MenuSelectorController>().SetLevel("Easy");
     }
 
     // Update is called once per frame
@@ -32,7 +41,10 @@ public class EnemySpawner : MonoBehaviour
     public void StartLevel(string levelname)
     {
         level_selector.gameObject.SetActive(false);
-        // this is not nice: we should not have to be required to tell the player directly that the level is starting
+
+        // find selected level from json
+        currentLevel = dm.levelData.First(level => level["name"].ToString() == levelname);
+
         GameManager.Instance.player.GetComponent<PlayerController>().StartLevel();
         StartCoroutine(SpawnWave());
     }
@@ -53,9 +65,20 @@ public class EnemySpawner : MonoBehaviour
             GameManager.Instance.countdown--;
         }
         GameManager.Instance.state = GameManager.GameState.INWAVE;
-        for (int i = 0; i < 10; ++i)
+
+        // get spawn defs from selected level
+        var spawns = currentLevel["spawns"] as JArray;
+
+        // loop through enemy types in json
+        foreach (var spawn in spawns)
         {
-            yield return SpawnEnemy("zombie");
+            string enemyName = spawn["enemy"].ToString();
+
+            // spawn 3 of every type for testing
+            for (int i = 0; i < 3; i++)
+            {
+                yield return SpawnEnemy(enemyName);
+            }
         }
         yield return new WaitWhile(() => GameManager.Instance.enemy_count > 0);
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
@@ -75,7 +98,7 @@ public class EnemySpawner : MonoBehaviour
         DataManager dm = FindFirstObjectByType<DataManager>();
         var enemyData = dm.enemyMap[enemyName];
 
-        // get stats from JSON
+        // get stats from json
         int spriteIndex = (int)enemyData["sprite"];
         int hp = (int)enemyData["hp"];
         int speed = (int)enemyData["speed"];
