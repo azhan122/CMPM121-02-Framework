@@ -94,14 +94,7 @@ public class EnemySpawner : MonoBehaviour
             // evaluate using dll
             int count = RPNEvaluator.RPNEvaluator.Evaluate(countExpr, vars);
 
-            // Enemy spawn count per wave for debugging
-            //Debug.Log($"Wave {currentWave}: Spawning {count} {enemyName}");
-
-            //yield return SpawnEnemyGroup(spawn, enemyName, count);
-            for (int i = 0; i < count; i++)
-            {
-                yield return SpawnEnemy(enemyName);
-            }
+            yield return SpawnEnemyGroup(spawn, enemyName, count);
         }
         yield return new WaitWhile(() => GameManager.Instance.enemy_count > 0);
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
@@ -144,9 +137,51 @@ public class EnemySpawner : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
     }
 
-    // IEnumerator SpawnEnemyGroup(JToken spawn, string enemyName, int count)
-    // {
-    //     // working on this
-    // }
+    IEnumerator SpawnEnemyGroup(JToken spawn, string enemyName, int count)
+    {
+        // default sequence
+        List<int> sequence = new List<int>();
+
+        if (spawn["sequence"] != null)
+        {
+    
+        }
+        else
+        {
+
+        }
+
+        if (spawn["delay"] != null)
+        {
+
+        }
+
+        // enemies spawned and index for cycling
+        int spawned = 0; 
+        int seqIndex = 0;    
+
+        // keep spawning until we reach total count
+        while (spawned < count)
+        {
+            // move to next sequence index 
+            seqIndex++;
+
+            if (seqIndex >= sequence.Count)
+            {
+                seqIndex = 0;
+            }
+
+            if (groupSize > remaining)
+            {
+                groupSize = remaining;
+            }
+
+            for (int i = 0; i < groupSize; i++)
+            {
+
+            }
+            yield return new WaitForSeconds(delay);
+        }
+    }
 
 }
