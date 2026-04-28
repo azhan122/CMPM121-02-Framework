@@ -4,21 +4,31 @@
        "sprite": 0,
        "hp": 20,
        "speed": 5,
-       "damage": 5
+       "damage": 5,
+       "scale": 1
    },
    {
        "name": "skeleton",
        "sprite": 1,
        "hp": 30,
        "speed": 7,
-       "damage": 10
+       "damage": 10,
+       "scale": 1
    },  
    {
        "name": "warlock",
        "sprite": 19,
        "hp": 30,
        "speed": 7,
-       "damage": 10
-   }
- 
+       "damage": 10,
+       "scale": 1
+   },
+   {
+       "name": "wendigo",
+       "sprite": 15,
+       "hp": 60,
+       "speed": 7,
+       "damage": 10,
+       "scale": 1.8
+   } 
 ]
