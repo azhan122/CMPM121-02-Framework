@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using TMPro; // Alyssa: Link to slain enemies counter
+
 public class GameManager 
 {
     public enum GameState
@@ -36,6 +38,12 @@ public class GameManager
     private List<GameObject> enemies;
     public int enemy_count { get { return enemies.Count; } }
 
+    // Alyssa: Timer & slain additions
+    public TextMeshProUGUI slain;
+    public int slaincount;
+    //public TextMeshProUGUI timelbl;
+    //public float starttime;
+
     public void AddEnemy(GameObject enemy)
     {
         enemies.Add(enemy);
@@ -43,6 +51,7 @@ public class GameManager
     public void RemoveEnemy(GameObject enemy)
     {
         enemies.Remove(enemy);
+        slaincount += 1; // Alyssa: Add 1 to the counter for every enemy defeated
     }
 
     public GameObject GetClosestEnemy(Vector3 point)
