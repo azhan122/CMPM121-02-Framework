@@ -94,7 +94,7 @@ public class EnemySpawner : MonoBehaviour
             // evaluate using dll
             int count = RPNEvaluator.RPNEvaluator.Evaluate(countExpr, vars);
 
-            yield return SpawnEnemyGroup(spawn, enemyName, count);
+            yield return SequenceGroup(spawn, enemyName, count);
         }
         yield return new WaitWhile(() => GameManager.Instance.enemy_count > 0);
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
@@ -137,51 +137,69 @@ public class EnemySpawner : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
     }
 
-    IEnumerator SpawnEnemyGroup(JToken spawn, string enemyName, int count)
+    IEnumerator SequenceGroup(JToken spawn, string enemyName, int count)
     {
-        // default sequence
+        // default sequence is 1 spawn at a time
         List<int> sequence = new List<int>();
 
+        // read sequence from json
         if (spawn["sequence"] != null)
         {
-    
+            // convert json array into a list
+            foreach (var value in spawn["sequence"])
+            {
+                sequence.Add((int)value);
+            }
         }
         else
         {
-
+            sequence.Add(1);
         }
 
+        // default delay
+        float delay = 2f;
+
+        // read delays from json
         if (spawn["delay"] != null)
         {
-
+            delay = float.Parse(spawn["delay"].ToString());
         }
 
-        // enemies spawned and index for cycling
-        int spawned = 0; 
-        int seqIndex = 0;    
+        // enemies spawned already
+        int spawned = 0;
+
+        // index for cycling sequence
+        int seqIndex = 0;   
 
         // keep spawning until we reach total count
         while (spawned < count)
         {
-            // move to next sequence index 
-            seqIndex++;
+            // get current group size from sequence
+            int groupSize = sequence[seqIndex];
 
+            // move to next sequence index
+            seqIndex++;
             if (seqIndex >= sequence.Count)
             {
                 seqIndex = 0;
             }
 
+            // make sure we don't spawn extra
+            int remaining = count - spawned;
             if (groupSize > remaining)
             {
                 groupSize = remaining;
             }
 
+            // spawn defined group
             for (int i = 0; i < groupSize; i++)
             {
-
+                yield return SpawnEnemy(enemyName);
+                spawned++;
             }
+
+            // wait for next group
             yield return new WaitForSeconds(delay);
         }
     }
-
 }
