@@ -94,7 +94,7 @@ public class EnemySpawner : MonoBehaviour
             // evaluate using dll
             int count = RPNEvaluator.RPNEvaluator.Evaluate(countExpr, vars);
 
-            yield return SequenceGroup(spawn, enemyName, count);
+            StartCoroutine(SequenceGroup(spawn, enemyName, count));
         }
         yield return new WaitWhile(() => GameManager.Instance.enemy_count > 0);
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
