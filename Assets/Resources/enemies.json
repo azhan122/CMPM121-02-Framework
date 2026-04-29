@@ -27,8 +27,8 @@
        "name": "wendigo",
        "sprite": 15,
        "hp": 60,
-       "speed": 7,
-       "damage": 10,
-       "scale": 1.8
+       "speed": 5,
+       "damage": 30,
+       "scale": 2
    } 
 ]

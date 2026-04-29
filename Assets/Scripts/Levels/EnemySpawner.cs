@@ -27,14 +27,37 @@ public class EnemySpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {   
-        // get reference to DataManager
-        dm = FindFirstObjectByType<DataManager>();
+            // get reference to DataManager
+            dm = FindFirstObjectByType<DataManager>();
+            
+            // y positioning
+            float yOffset = 100f;
 
-        GameObject selector = Instantiate(button, level_selector.transform);
-        selector.transform.localPosition = new Vector3(0, 130);
-        selector.GetComponent<MenuSelectorController>().spawner = this;
-        selector.GetComponent<MenuSelectorController>().SetLevel("Easy");
-    }
+            // space between buttons
+            float spacing = 30f; 
+
+            // loop through all levels in levels.json
+            for (int i = 0; i < dm.levelData.Count; i++)
+            {
+                var level = dm.levelData[i];
+
+                // get level name from json
+                string levelName = level["name"].ToString();
+
+                // create button
+                GameObject selector = Instantiate(button, level_selector.transform);
+
+                // position buttons vertically
+                selector.transform.localPosition = new Vector3(0, yOffset - i * spacing);
+
+                // connect button to spawner
+                var controller = selector.GetComponent<MenuSelectorController>();
+                controller.spawner = this;
+
+                // set level name
+                controller.SetLevel(levelName);
+            }
+        }
 
     // Update is called once per frame
     void Update()
