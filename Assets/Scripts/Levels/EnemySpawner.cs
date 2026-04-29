@@ -120,7 +120,7 @@ public class EnemySpawner : MonoBehaviour
         int spriteIndex = (int)enemyData["sprite"];
         int hp = (int)enemyData["hp"];
         int speed = (int)enemyData["speed"];
-        // damage still handled inside of EnemyController for now
+        int damage = (int)enemyData["damage"];
 
         // apply sprite from sprite manager
         new_enemy.GetComponent<SpriteRenderer>().sprite =
@@ -130,6 +130,7 @@ public class EnemySpawner : MonoBehaviour
         EnemyController en = new_enemy.GetComponent<EnemyController>();
         en.hp = new Hittable(hp, Hittable.Team.MONSTERS, new_enemy);
         en.speed = speed;
+        en.damage = damage;
 
         // tie enemy to GameManager
         GameManager.Instance.AddEnemy(new_enemy);

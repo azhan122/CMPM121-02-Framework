@@ -9,6 +9,8 @@ public class EnemyController : MonoBehaviour
     public HealthBar healthui;
     public bool dead;
 
+    public int damage;
+
     public float last_attack;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,7 +39,7 @@ public class EnemyController : MonoBehaviour
         if (last_attack + 2 < Time.time)
         {
             last_attack = Time.time;
-            target.gameObject.GetComponent<PlayerController>().hp.Damage(new Damage(5, Damage.Type.PHYSICAL));
+            target.gameObject.GetComponent<PlayerController>().hp.Damage(new Damage(damage, Damage.Type.PHYSICAL));
         }
     }
 
