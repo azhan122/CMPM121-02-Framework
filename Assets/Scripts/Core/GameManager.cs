@@ -39,10 +39,8 @@ public class GameManager
     public int enemy_count { get { return enemies.Count; } }
 
     // Alyssa: Timer & slain additions
-    public TextMeshProUGUI slain;
     public int slaincount;
-    //public TextMeshProUGUI timelbl;
-    //public float starttime;
+    public int shotnum;
 
     public void AddEnemy(GameObject enemy)
     {
