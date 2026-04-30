@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using TMPro; // Alyssa: Link to slain enemies counter
+using TMPro;
+using UnityEngine.SceneManagement; // Alyssa: Link to slain enemies counter
 
 public class GameManager 
 {
@@ -22,9 +23,23 @@ public class GameManager
     public static GameManager Instance {  get
         {
             if (theInstance == null)
-                theInstance = new GameManager();
+                theInstance = new GameManager(); // Make theInstance null after it is no longer null
             return theInstance;
         }
+    }
+
+    // Alyssa: Resetting game
+    public static void InstanceNull()
+    {theInstance = null;}
+    public static void GameReload()
+    {
+        // Delete all current enemies on the board
+        /*while (enemies.Count != 0)
+        {
+            EnemyController.Die();
+        }*/
+        InstanceNull();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public GameObject player;
