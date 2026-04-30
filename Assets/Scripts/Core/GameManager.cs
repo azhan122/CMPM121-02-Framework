@@ -31,16 +31,28 @@ public class GameManager
     // Alyssa: Resetting game
     public static void InstanceNull()
     {theInstance = null;}
-    public static void GameReload()
+    public void GameReload()
     {
+        // Delete all current enemies on the board
+        /*while (enemies.Count != 0)
+        {
+            EnemyController.DestroyObject();
+        }*/
+        InstanceNull();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    /*public void GameReload()
+    {*/
         // Delete all current enemies on the board
         /*while (enemies.Count != 0)
         {
             EnemyController.Die();
         }*/
+        /*GameManager.Instance.state = GameManager.GameState.PREGAME;
         InstanceNull();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+    }*/
 
     public GameObject player;
     
