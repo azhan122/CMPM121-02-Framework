@@ -120,6 +120,10 @@ public class EnemySpawner : MonoBehaviour
             StartCoroutine(SequenceGroup(spawn, enemyName, count));
         }
         yield return new WaitWhile(() => GameManager.Instance.enemy_count > 0);
+        if (GameManager.Instance.state == GameManager.GameState.PREGAME)
+        {
+            yield break;
+        } // Alyssa: Prevents game from going to WAVEEND stage when restarting
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
 
         // count waves

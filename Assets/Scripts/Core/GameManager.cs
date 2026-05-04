@@ -38,6 +38,8 @@ public class GameManager
         {
             EnemyController.DestroyObject();
         }*/
+        //foreach(GameObject enemies in EnemyController)
+
         InstanceNull();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

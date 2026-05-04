@@ -35,5 +35,8 @@ using static GameManager;
 
 public class Restart : MonoBehaviour
 {
-    //GameManager.GameReload();
+    public void RestartGame()
+    {
+        GameManager.Instance.GameReload();
+    }
 }
