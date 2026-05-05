@@ -44,5 +44,13 @@ public class DataManager : MonoBehaviour
             string name = enemy["name"].ToString();
             enemyMap[name] = enemy;
         }
+
+        // create dictionary from loaded spells
+         spellMap = new Dictionary<string, JObject>();
+        foreach (var spell in spellData)
+        {
+            string name = spell["name"].ToString();
+            spellMap[name] = spell;
+        }
     }
 }
