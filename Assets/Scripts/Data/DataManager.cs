@@ -35,7 +35,6 @@ public class DataManager : MonoBehaviour
         // parse level enemy and spell definitions
         levelData = JsonConvert.DeserializeObject<List<JObject>>(levelsFile.text);
         enemyData = JsonConvert.DeserializeObject<List<JObject>>(enemiesFile.text);
-        spellData = JsonConvert.DeserializeObject<List<JObject>>(spellsFile.text);
 
         // create dictionary from loaded enemies
         enemyMap = new Dictionary<string, JObject>();
@@ -45,12 +44,24 @@ public class DataManager : MonoBehaviour
             enemyMap[name] = enemy;
         }
 
-        // create dictionary from loaded spells
-         spellMap = new Dictionary<string, JObject>();
-        foreach (var spell in spellData)
+        // parse spells as dictionary
+        JObject rawSpells = JObject.Parse(spellsFile.text);
+        spellData = new List<JObject>();
+        spellMap = new Dictionary<string, JObject>();
+
+        // go through spells.json keys
+        foreach (var pair in rawSpells)
         {
-            string name = spell["name"].ToString();
-            spellMap[name] = spell;
+            // spell id and data
+            string id = pair.Key;
+            JObject spell = (JObject)pair.Value;
+
+            // connect the id into the spell object
+            spell["id"] = id;
+
+            // add spell to list and dictionary for fast lookup
+            spellData.Add(spell);
+            spellMap[id] = spell;
         }
     }
 }
