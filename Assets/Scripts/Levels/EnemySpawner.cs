@@ -149,6 +149,16 @@ public class EnemySpawner : MonoBehaviour
         int speed = (int)enemyData["speed"];
         int damage = (int)enemyData["damage"];
 
+        // read scale
+        float scale = 1f;
+        if (enemyData["scale"] != null)
+        {
+            scale = (float)enemyData["scale"];
+        }
+
+        // apply scale to entire enemy object
+        new_enemy.transform.localScale = Vector3.one * scale;
+
         // apply sprite from sprite manager
         new_enemy.GetComponent<SpriteRenderer>().sprite =
         GameManager.Instance.enemySpriteManager.Get(spriteIndex);
@@ -158,6 +168,9 @@ public class EnemySpawner : MonoBehaviour
         en.hp = new Hittable(hp, Hittable.Team.MONSTERS, new_enemy);
         en.speed = speed;
         en.damage = damage;
+
+        // if scaling looks weird with current ui, scale the health ui too
+        // en.healthui.transform.localScale = Vector3.one;
 
         // tie enemy to GameManager
         GameManager.Instance.AddEnemy(new_enemy);
