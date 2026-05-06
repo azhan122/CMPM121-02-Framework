@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 public class Spell 
@@ -9,34 +8,39 @@ public class Spell
     public SpellCaster owner;
     public Hittable.Team team;
 
+    // json data stored per spell
+    protected JObject data;
+
     public Spell(SpellCaster owner)
     {
         this.owner = owner;
     }
 
-    public string GetName()
+    // read spell vars through json data
+    public virtual string GetName()
     {
-        return "Bolt";
+        return data?["name"]?.ToString() ?? "Spell";
     }
 
-    public int GetManaCost()
+    public virtual int GetManaCost()
     {
-        return 10;
+        return int.Parse(data?["mana_cost"]?.ToString() ?? "10");
     }
 
-    public int GetDamage()
+    public virtual float GetCooldown()
     {
-        return 100;
-    }
-
-    public float GetCooldown()
-    {
-        return 0.75f;
+        return float.Parse(data?["cooldown"]?.ToString() ?? "1");
     }
 
     public virtual int GetIcon()
     {
-        return 0;
+        return data?["icon"] != null ? (int)data["icon"] : 0;
+    }
+
+    // damage hardcoded still for now
+    public virtual int GetDamage()
+    {
+        return 10;
     }
 
     public bool IsReady()
