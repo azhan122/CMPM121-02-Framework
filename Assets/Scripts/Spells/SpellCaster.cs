@@ -7,6 +7,7 @@ public class SpellCaster
     public int mana;
     public int max_mana;
     public int mana_reg;
+    public int spell_power;
     public Hittable.Team team;
     public Spell spell;
 
@@ -26,7 +27,10 @@ public class SpellCaster
         this.max_mana = mana;
         this.mana_reg = mana_reg;
         this.team = team;
-        spell = new SpellBuilder().Build(this);
+        this.spell_power = 10;
+
+        SpellBuilder builder = new SpellBuilder();
+        spell = builder.Build(this);
     }
 
     public IEnumerator Cast(Vector3 where, Vector3 target)

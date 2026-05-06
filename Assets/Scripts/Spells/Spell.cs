@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using RPNEvaluator; // ✅ needed for RPN evaluation
+
 
 public class Spell 
 {
@@ -24,11 +27,21 @@ public class Spell
 
     public virtual int GetManaCost()
     {
-        return int.Parse(data?["mana_cost"]?.ToString() ?? "10");
+        // evaluate RPN instead of parsing directly
+        string expr = data?["mana_cost"]?.ToString() ?? "10";
+
+        Dictionary<string, int> vars = new Dictionary<string, int>()
+        {
+            { "wave", GameManager.Instance.wave },   
+            { "power", owner != null ? owner.spell_power : 0 } 
+        };
+
+        return RPNEvaluator.RPNEvaluator.Evaluate(expr, vars);
     }
 
     public virtual float GetCooldown()
     {
+        // cooldown is usually float
         return float.Parse(data?["cooldown"]?.ToString() ?? "1");
     }
 
@@ -40,7 +53,17 @@ public class Spell
     // damage hardcoded still for now
     public virtual int GetDamage()
     {
-        return 10;
+        // RPN damage expressions
+        var dmg = data?["damage"];
+        string expr = dmg?["amount"]?.ToString() ?? "10";
+
+        Dictionary<string, int> vars = new Dictionary<string, int>()
+        {
+            { "wave", GameManager.Instance.wave },
+            { "power", owner != null ? owner.spell_power : 0 }
+        };
+
+        return RPNEvaluator.RPNEvaluator.Evaluate(expr, vars);
     }
 
     public bool IsReady()
@@ -58,11 +81,23 @@ public class Spell
 
         // read projectile properties with defaults
         string trajectory = proj?["trajectory"]?.ToString() ?? "straight";
-        float speed = float.Parse(proj?["speed"]?.ToString() ?? "10");
+
+        // evaluate speed as RPN
+        string speedExpr = proj?["speed"]?.ToString() ?? "10";
+
+        Dictionary<string, int> vars = new Dictionary<string, int>()
+        {
+            { "wave", GameManager.Instance.wave },
+            { "power", owner != null ? owner.spell_power : 0 }
+        };
+
+        float speed = RPNEvaluator.RPNEvaluator.Evaluate(speedExpr, vars);
+
         int sprite = proj?["sprite"] != null ? (int)proj["sprite"] : 0;
 
         // tell projectile manager to create the projectile
         GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, OnHit);
+
         yield return new WaitForEndOfFrame();
     }
 

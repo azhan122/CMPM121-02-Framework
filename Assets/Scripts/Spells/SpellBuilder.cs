@@ -1,50 +1,42 @@
 using UnityEngine;
-using System.IO;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 using System.Collections.Generic;
-
 
 public class SpellBuilder 
 {
+    DataManager dm;
+
+    public SpellBuilder()
+    {
+        dm = GameObject.FindFirstObjectByType<DataManager>();
+    }
 
     public Spell Build(SpellCaster owner)
     {
-        DataManager dm = GameObject.FindFirstObjectByType<DataManager>();
-
-        // collect base spells 
+        // collect base spells only (
         List<JObject> baseSpells = new List<JObject>();
 
-        foreach (var spell in dm.spellData)
+        foreach (var spellData in dm.spellData)
         {
-            // base spells damage
-            if (spell["damage"] != null)
+            if (spellData["damage"] != null && spellData["projectile"] != null)
             {
-                baseSpells.Add(spell);
+                baseSpells.Add(spellData);
             }
         }
 
-        // safety check
         if (baseSpells.Count == 0)
         {
-            Debug.LogError("No base spells found!");
+            Debug.LogError("No base spells found in spellData!");
             return new Spell(owner);
         }
 
-        // pick a random base spell
-        int index = Random.Range(0, baseSpells.Count);
-        JObject chosen = baseSpells[index];
+        // pick random base spell
+        JObject chosen = baseSpells[Random.Range(0, baseSpells.Count)];
 
-        // create Spell and inject json
-        Spell newSpell = new Spell(owner);
-        newSpell.SetAttributes(chosen);
+        // create spell and attach jSON
+        Spell spell = new Spell(owner);
+        spell.SetAttributes(chosen);
 
-        return newSpell;
+        return spell;
     }
-
-   
-    public SpellBuilder()
-    {        
-    }
-
 }
