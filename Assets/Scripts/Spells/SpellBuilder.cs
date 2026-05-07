@@ -13,29 +13,34 @@ public class SpellBuilder
 
     public Spell Build(SpellCaster owner)
     {
-        // collect base spells only (
-        List<JObject> baseSpells = new List<JObject>();
-
-        foreach (var spellData in dm.spellData)
-        {
-            if (spellData["damage"] != null && spellData["projectile"] != null)
-            {
-                baseSpells.Add(spellData);
-            }
-        }
-
-        if (baseSpells.Count == 0)
-        {
-            Debug.LogError("No base spells found in spellData!");
-            return new Spell(owner);
-        }
-
-        // pick random base spell
-        JObject chosen = baseSpells[Random.Range(0, baseSpells.Count)];
-
-        // create spell and attach jSON
+        // create default arcane bolt spell
         Spell spell = new Spell(owner);
-        spell.SetAttributes(chosen);
+
+        // load arcane bolt data from spells.json
+        spell.SetAttributes(dm.spellMap["arcane_bolt"]);
+
+        // list of modifier ids
+        List<string> modifiers = new List<string>()
+        {
+            "damage_amp",
+            "speed_amp",
+            "splitter",
+            "doubler",
+            "chaos",
+            "homing"
+        };
+
+        // random amount of modifiers
+        int modifierCount = Random.Range(0, 3);
+
+        // add random modifiers
+        for (int i = 0; i < modifierCount; i++)
+        {
+            string chosen = modifiers[Random.Range(0, modifiers.Count)];
+
+            // add modifier data to spell
+            spell.AddModifier(dm.spellMap[chosen]);
+        }
 
         return spell;
     }

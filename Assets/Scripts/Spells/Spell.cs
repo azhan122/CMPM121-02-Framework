@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using RPNEvaluator; // ✅ needed for RPN evaluation
+using RPNEvaluator;
 
 
 public class Spell 
@@ -13,6 +13,9 @@ public class Spell
 
     // json data stored per spell
     protected JObject data;
+
+    // stores modifier spell data
+    protected List<JObject> modifiers = new List<JObject>();
 
     public Spell(SpellCaster owner)
     {
@@ -92,7 +95,6 @@ public class Spell
         };
 
         float speed = RPNEvaluator.RPNEvaluator.Evaluate(speedExpr, vars);
-
         int sprite = proj?["sprite"] != null ? (int)proj["sprite"] : 0;
 
         // tell projectile manager to create the projectile
@@ -105,6 +107,12 @@ public class Spell
     public virtual void SetAttributes(JObject attributes)
     {
         data = attributes;
+    }
+
+    // adds a modifier onto the spell
+    public void AddModifier(JObject modifier)
+    {
+        modifiers.Add(modifier);
     }
 
     // called when projectiles hit something
