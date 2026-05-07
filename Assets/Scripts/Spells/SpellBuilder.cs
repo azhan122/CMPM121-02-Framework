@@ -13,33 +13,38 @@ public class SpellBuilder
 
     public Spell Build(SpellCaster owner)
     {
-        // create default arcane bolt spell
+        // arcane bolt only now
+        JObject baseSpell = dm.spellMap["arcane_bolt"];
+
+        // create spell
         Spell spell = new Spell(owner);
+        spell.SetAttributes(baseSpell);
 
-        // load arcane bolt data from spells.json
-        spell.SetAttributes(dm.spellMap["arcane_bolt"]);
-
-        // list of modifier ids
-        List<string> modifiers = new List<string>()
+        // possible modifier ids
+        List<string> modifierIDs = new List<string>()
         {
             "damage_amp",
             "speed_amp",
-            "splitter",
             "doubler",
+            "splitter",
             "chaos",
             "homing"
         };
 
-        // random amount of modifiers
-        int modifierCount = Random.Range(0, 3);
+        // random modifier count
+        int modifierCount = Random.Range(1, 3);
 
-        // add random modifiers
         for (int i = 0; i < modifierCount; i++)
         {
-            string chosen = modifiers[Random.Range(0, modifiers.Count)];
+            // pick random modifier
+            string id = modifierIDs[Random.Range(0, modifierIDs.Count)];
+            JObject modifier = dm.spellMap[id];
 
-            // add modifier data to spell
-            spell.AddModifier(dm.spellMap[chosen]);
+            // attach modifier to spell (for now)
+            spell.AddModifier(modifier);
+
+            // debug modifier added
+            Debug.Log("Applied modifier: " + modifier["name"]);
         }
 
         return spell;
