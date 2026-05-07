@@ -76,6 +76,10 @@
        "damage_multiplier": "0.75",
        "mana_adder": "10",
        "projectile_trajectory": "homing"
+   },
+   "discount": { // Alyssa: Reduce the amount of mana needed to cast spells
+       "name": "discount",
+       "description": "Reduce the mana cost of spells by 50%.",
+       "mana_cost":  "0.5"
    }
-
 }
