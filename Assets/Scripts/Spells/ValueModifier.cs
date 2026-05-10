@@ -1,14 +1,5 @@
 using System.Collections.Generic;
 
-/// <summary>
-/// Represents a single modification applied to a numeric spell property
-/// (damage, mana cost, speed, cooldown, etc.)
-/// 
-/// This is NOT a spell. It is just a "rule" that modifies a value.
-/// Example:
-///     Multiply damage by 1.5
-///     Add +10 mana cost
-/// </summary>
 public class ValueModifier
 {
     // multiply or add value

@@ -45,7 +45,7 @@ public class SpellBuilder
         JObject modifier = dm.spellMap[id];
 
         // apply modifier to spell 
-        spell.AddModifier(modifier);
+        spell.ApplyModifier(modifier);
     }
 
     // get one random modifier for reward UI

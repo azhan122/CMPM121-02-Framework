@@ -7,17 +7,15 @@ public class AcceptSpell : MonoBehaviour
 
     public void Accept()
     {   
-        // read stored modifier
+        // ui stored
         PlayerController player = GameManager.Instance.player.GetComponent<PlayerController>();
         JObject reward = GameManager.Instance.pendingSpellReward;
-        SpellBuilder builder = new SpellBuilder();
+        Spell spell = player.spellcaster.spell;
 
-        // apply modifier to player's spell
-        player.spellcaster.spell.AddModifier(reward);
+        // applies mod effect
+        spell.AddModifier(reward);
 
-        Debug.Log("Accepted spell: " + reward["name"]);
-
-        // clear reward so it can't be reused
+        // reset stored mod
         GameManager.Instance.pendingSpellReward = null;
     }
 }

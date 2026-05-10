@@ -14,6 +14,12 @@ public class Spell
     // json data stored per spell
     protected JObject data;
 
+    // store active modifiers for UI
+    public List<ValueModifier> damageMods = new List<ValueModifier>();
+    public List<ValueModifier> manaMods = new List<ValueModifier>();
+    public List<ValueModifier> speedMods = new List<ValueModifier>();
+    public List<ValueModifier> cooldownMods = new List<ValueModifier>();
+
     // stores modifier spell data
     protected List<JObject> modifiers = new List<JObject>();
 
@@ -39,13 +45,14 @@ public class Spell
             { "power", owner != null ? owner.spell_power : 0 } 
         };
 
-        return RPNEvaluator.RPNEvaluator.Evaluate(expr, vars);
+        int baseMana = RPNEvaluator.RPNEvaluator.Evaluate(expr, vars);
+        return (int)ValueModifier.Apply(baseMana, manaMods);
     }
 
     public virtual float GetCooldown()
     {
-        // cooldown is usually float
-        return float.Parse(data?["cooldown"]?.ToString() ?? "1");
+        float baseCd = float.Parse(data?["cooldown"]?.ToString() ?? "1");
+        return ValueModifier.Apply(baseCd, cooldownMods);
     }
 
     public virtual int GetIcon()
@@ -66,7 +73,8 @@ public class Spell
             { "power", owner != null ? owner.spell_power : 0 }
         };
 
-        return RPNEvaluator.RPNEvaluator.Evaluate(expr, vars);
+        int baseDamage = RPNEvaluator.RPNEvaluator.Evaluate(expr, vars);
+        return (int)ValueModifier.Apply(baseDamage, damageMods);
     }
 
     public bool IsReady()
@@ -94,7 +102,8 @@ public class Spell
             { "power", owner != null ? owner.spell_power : 0 }
         };
 
-        float speed = RPNEvaluator.RPNEvaluator.Evaluate(speedExpr, vars);
+        float baseSpeed = RPNEvaluator.RPNEvaluator.Evaluate(speedExpr, vars);
+        float speed = ValueModifier.Apply(baseSpeed, speedMods);
         int sprite = proj?["sprite"] != null ? (int)proj["sprite"] : 0;
 
         // tell projectile manager to create the projectile
@@ -111,8 +120,12 @@ public class Spell
 
     // adds a modifier onto the spell
     public void AddModifier(JObject modifier)
-    {
+    {   
+        // ui data
         modifiers.Add(modifier);
+
+        // modification effects
+        ApplyModifier(modifier);
     }
 
     // called when projectiles hit something
@@ -123,4 +136,62 @@ public class Spell
             other.Damage(new Damage(GetDamage(), Damage.Type.ARCANE));
         }
     }
+    public void ApplyModifier(JObject mod)
+    {
+        // debug for testing
+        Debug.Log("=== SPELL MODIFIER APPLIED ===");
+
+        if (mod["name"] != null)
+            Debug.Log("Modifier: " + mod["name"]);
+        else
+            Debug.Log("Modifier: UNKNOWN");
+
+        // damage modifiers
+        if (mod["damage_multiplier"] != null)
+        {
+            float val = float.Parse(mod["damage_multiplier"].ToString());
+            damageMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
+            Debug.Log("-> Damage x" + val);
+        }
+
+        // mana modifiers
+        if (mod["mana_multiplier"] != null)
+        {
+            float val = float.Parse(mod["mana_multiplier"].ToString());
+            manaMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
+            Debug.Log("-> Mana x" + val);
+        }
+
+        if (mod["mana_adder"] != null)
+        {
+            float val = float.Parse(mod["mana_adder"].ToString());
+            manaMods.Add(new ValueModifier(ValueModifier.Type.ADD, val));
+            Debug.Log("-> Mana +" + val);
+        }
+
+        // speed modifiers
+        if (mod["speed_multiplier"] != null)
+        {
+            float val = float.Parse(mod["speed_multiplier"].ToString());
+            speedMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
+            Debug.Log("-> Speed x" + val);
+        }
+
+        // cooldown modifiers
+        if (mod["cooldown_multiplier"] != null)
+        {
+            float val = float.Parse(mod["cooldown_multiplier"].ToString());
+            cooldownMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
+            Debug.Log("-> Cooldown x" + val);
+        }
+
+        // behavior modifiers (trajectory override etc.)
+        if (mod["projectile_trajectory"] != null)
+        {
+            string type = mod["projectile_trajectory"].ToString();
+            modifiers.Add(mod);
+            Debug.Log("-> Projectile behavior changed: " + type);
+        }
+    }
 }
+
