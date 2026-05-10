@@ -126,11 +126,6 @@ public class EnemySpawner : MonoBehaviour
         } // Alyssa: Prevents game from going to WAVEEND stage when restarting
         GameManager.Instance.state = GameManager.GameState.WAVEEND;
 
-        // Apply random modifier between waves (we will remove this when we add selection UI)
-        PlayerController player = GameManager.Instance.player.GetComponent<PlayerController>();
-        SpellBuilder builder = new SpellBuilder();
-        builder.ApplyRandomModifier(player.spellcaster.spell);
-
         // count waves
         GameManager.Instance.wave = currentWave;
         currentWave++;
