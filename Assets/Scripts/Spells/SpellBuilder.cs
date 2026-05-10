@@ -6,20 +6,23 @@ public class SpellBuilder
 {
     DataManager dm;
 
-    // modifiers defined from data
-    List<string> modifierIDs = new List<string>()
-    {
-        "damage_amp",
-        "speed_amp",
-        "doubler",
-        "splitter",
-        "chaos",
-        "homing"
-    };
+    List<string> modifierIDs = new List<string>();
 
     public SpellBuilder()
     {
         dm = GameObject.FindFirstObjectByType<DataManager>();
+
+        // build modifier list from json
+        foreach (var pair in dm.spellMap)
+        {
+            JObject spell = pair.Value;
+
+            // treat anything without projectile as modifier
+            if (spell["projectile"] == null)
+            {
+                modifierIDs.Add(pair.Key);
+            }
+        }
     }
 
     // creates spell itself
@@ -29,7 +32,6 @@ public class SpellBuilder
         JObject baseSpell = dm.spellMap["arcane_bolt"];
         Spell spell = new Spell(owner);
         spell.SetAttributes(baseSpell);
-
         return spell;
     }
 
@@ -46,7 +48,7 @@ public class SpellBuilder
         spell.AddModifier(modifier);
     }
 
-    // get one random spell
+    // get one random modifier for reward UI
     public JObject GenerateRandomModifier()
     {
         // pick random modifier id
