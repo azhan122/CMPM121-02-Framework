@@ -23,6 +23,18 @@ public class Spell
     // stores modifier spell data
     protected List<JObject> modifiers = new List<JObject>();
 
+
+    // projectile behavior overrides
+    public string trajectoryOverride = "";
+
+    // multi-shot modifiers
+    public bool doubler = false;
+    public bool splitter = false;
+
+    // modifier settings
+    public float doublerDelay = 0.5f;
+    public float splitAngle = 10f;
+
     public Spell(SpellCaster owner)
     {
         this.owner = owner;
@@ -93,6 +105,12 @@ public class Spell
         // read projectile properties with defaults
         string trajectory = proj?["trajectory"]?.ToString() ?? "straight";
 
+        // modifier can override projectile movement
+        if (trajectoryOverride != "")
+        {
+            trajectory = trajectoryOverride;
+        }
+
         // evaluate speed as RPN
         string speedExpr = proj?["speed"]?.ToString() ?? "10";
 
@@ -108,6 +126,20 @@ public class Spell
 
         // tell projectile manager to create the projectile
         GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, OnHit);
+
+        // splitter shoots second angled projectile
+        if (splitter)
+        {
+            Vector3 splitDir = Quaternion.Euler(0, 0, splitAngle) * (target - where);
+            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, splitDir, speed, OnHit);
+        }
+
+        // doubler shoots again after delay
+        if (doubler)
+        {
+            yield return new WaitForSeconds(doublerDelay);
+            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, OnHit);
+        }
 
         yield return new WaitForEndOfFrame();
     }
@@ -136,6 +168,41 @@ public class Spell
             other.Damage(new Damage(GetDamage(), Damage.Type.ARCANE));
         }
     }
+
+    // evaluates modifier expressions from json
+   private float EvaluateModifier(string expr)
+    {
+        // direct float first
+        if (float.TryParse(expr, out float result))
+        {
+            return result;
+        }
+
+        // RPN otherwise
+        Dictionary<string, int> vars = new Dictionary<string, int>()
+        {
+            { "wave", GameManager.Instance.wave },
+            { "power", owner != null ? owner.spell_power : 0 }
+        };
+
+        try
+        {
+            return RPNEvaluator.RPNEvaluator.Evaluate(expr, vars);
+        }
+        catch
+        {
+            Debug.LogWarning("Invalid modifier expression: " + expr);
+
+            // unworking RPN of chaos modifier compensation
+            if (expr == "1.5 wave 5 / +")
+            {
+                return 1.5f + (GameManager.Instance.wave / 5f);
+            }
+
+            return 1;
+        }
+    }
+
     public void ApplyModifier(JObject mod)
     {
         // debug for testing
@@ -149,7 +216,7 @@ public class Spell
         // damage modifiers
         if (mod["damage_multiplier"] != null)
         {
-            float val = float.Parse(mod["damage_multiplier"].ToString());
+            float val = EvaluateModifier(mod["damage_multiplier"].ToString());
             damageMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
             Debug.Log("-> Damage x" + val);
         }
@@ -157,14 +224,14 @@ public class Spell
         // mana modifiers
         if (mod["mana_multiplier"] != null)
         {
-            float val = float.Parse(mod["mana_multiplier"].ToString());
+            float val = EvaluateModifier(mod["mana_multiplier"].ToString());
             manaMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
             Debug.Log("-> Mana x" + val);
         }
 
         if (mod["mana_adder"] != null)
         {
-            float val = float.Parse(mod["mana_adder"].ToString());
+            float val = EvaluateModifier(mod["mana_adder"].ToString());
             manaMods.Add(new ValueModifier(ValueModifier.Type.ADD, val));
             Debug.Log("-> Mana +" + val);
         }
@@ -172,7 +239,7 @@ public class Spell
         // speed modifiers
         if (mod["speed_multiplier"] != null)
         {
-            float val = float.Parse(mod["speed_multiplier"].ToString());
+            float val = EvaluateModifier(mod["speed_multiplier"].ToString());
             speedMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
             Debug.Log("-> Speed x" + val);
         }
@@ -180,17 +247,39 @@ public class Spell
         // cooldown modifiers
         if (mod["cooldown_multiplier"] != null)
         {
-            float val = float.Parse(mod["cooldown_multiplier"].ToString());
+            float val = EvaluateModifier(mod["cooldown_multiplier"].ToString());
             cooldownMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
             Debug.Log("-> Cooldown x" + val);
         }
 
-        // behavior modifiers (trajectory override etc.)
+        // projectile behavior override
         if (mod["projectile_trajectory"] != null)
         {
-            string type = mod["projectile_trajectory"].ToString();
-            modifiers.Add(mod);
-            Debug.Log("-> Projectile behavior changed: " + type);
+            trajectoryOverride = mod["projectile_trajectory"].ToString();
+
+            Debug.Log("-> Projectile behavior changed: " + trajectoryOverride);
+        }
+
+        // doubler modifier
+        if (mod["name"] != null && mod["name"].ToString() == "doubled")
+        {
+            doubler = true;
+
+            if (mod["delay"] != null)
+                doublerDelay = EvaluateModifier(mod["delay"].ToString());
+
+            Debug.Log("-> Doubler enabled");
+        }
+
+        // splitter modifier
+        if (mod["name"] != null && mod["name"].ToString() == "split")
+        {
+            splitter = true;
+
+            if (mod["angle"] != null)
+                splitAngle = EvaluateModifier(mod["angle"].ToString());
+
+            Debug.Log("-> Splitter enabled");
         }
     }
 }
