@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 using TMPro;
 using UnityEngine.SceneManagement; // Alyssa: Link to slain enemies counter
@@ -64,6 +65,7 @@ public class GameManager
     public EnemySpriteManager enemySpriteManager;
     public PlayerSpriteManager playerSpriteManager;
     public RelicIconManager relicIconManager;
+    public JObject pendingSpellReward;
 
     private List<GameObject> enemies;
     public int enemy_count { get { return enemies.Count; } }

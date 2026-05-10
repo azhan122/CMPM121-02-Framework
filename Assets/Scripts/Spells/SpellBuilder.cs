@@ -42,10 +42,17 @@ public class SpellBuilder
         // get modifier json
         JObject modifier = dm.spellMap[id];
 
-        // apply modifier to spell (for now)
+        // apply modifier to spell 
         spell.AddModifier(modifier);
+    }
 
-        // debug output (for now)
-        Debug.Log("Applied modifier: " + modifier["name"]);
+    // get one random spell
+    public JObject GenerateRandomModifier()
+    {
+        // pick random modifier id
+        string id = modifierIDs[Random.Range(0, modifierIDs.Count)];
+
+        // return modifier json
+        return dm.spellMap[id];
     }
 }

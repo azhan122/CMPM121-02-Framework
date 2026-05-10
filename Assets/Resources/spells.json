@@ -43,17 +43,20 @@
    "damage_amp": {
        "name": "damage-amplified",
        "description": "Increased damage and increased mana cost.",
+       "icon": 7,
        "damage_multiplier": "1.5",
        "mana_multiplier": "1.5"
    },
    "speed_amp": {
        "name": "speed-amplified",
        "description": "Faster projectile speed",
+       "icon": 0,
        "speed_multiplier": "1.75"
    },
    "doubler": {
        "name": "doubled",
        "description": "Spell is cast a second time after a small delay; increased mana cost and cooldown.",
+       "icon": 17,
        "delay": "0.5",
        "mana_multiplier": "1.5",
        "cooldown_multiplier": "1.5"
@@ -61,32 +64,37 @@
    "splitter": {
        "name": "split",
        "description": "Spell is cast twice in slightly different directions; increased mana cost.",
+       "icon": 1,
        "angle": "10",
        "mana_multiplier": "1.5"
    },
    "chaos": {
        "name": "chaotic",
        "description": "Significantly increased damage, but projectile is spiraling.",
+       "icon": 6,
        "damage_multiplier": "1.5 wave 5 / +",
        "projectile_trajectory": "spiraling"
    },
    "homing": {
        "name": "homing",
        "description": "Homing projectile, with decreased damage and increased mana cost.",
+       "icon": 10,
        "damage_multiplier": "0.75",
        "mana_adder": "10",
        "projectile_trajectory": "homing"
    },
-   "discount": { // Alyssa: Reduce the amount of mana needed to cast spells
+   "discount": { 
        "name": "discount",
        "description": "Reduce the mana cost of spells by 50%.",
+       "icon": 11,
        "mana_multiplier": "0.5"
    },
-   "piercing": { // Alyssa: Piercing bullet that only despawns if it hits a wall
+   "piercing": { 
        "name": "piercing",
        "description": "Allows spells to pass through enemies.",
+       "icon": 4,
        "damage_multiplier": "1.5",
        "mana_multiplier": "1.5",
-       "projectile_trajectory": "piercing" // Implement in ProjectileManager.cs
+       "projectile_trajectory": "piercing" 
    }
 }
