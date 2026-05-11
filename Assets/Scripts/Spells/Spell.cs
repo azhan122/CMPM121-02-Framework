@@ -293,11 +293,12 @@ public class Spell
                 splitAngle = EvaluateModifier(mod["angle"].ToString());
         }
 
-        else if (name == "piercing")
-        {   
-            //trajectoryOverride = "piercing";   uncomment this after creating PiercingProjectileMovement(speed); and uncommenting in ProjectileManager
+        /*else if (name == "piercing")
+        {
+            piercing = true;
+            trajectoryOverride = "piercing"; // Alyssa: uncomment this after creating PiercingProjectileMovement(speed); and uncommenting in ProjectileManager
             activeBehaviorMods.Add("piercing");
-        }
+        }*/
     }
 }
 

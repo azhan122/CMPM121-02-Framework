@@ -48,10 +48,10 @@ public class ProjectileManager : MonoBehaviour
         {
             return new SpiralingProjectileMovement(speed);
         }
-        /*if (name == "piercing")                           
+        if (name == "piercing")                           
         {
-            return new PiercingProjectileMovement(speed);     <----- Alyssa: Create new movement
-        }*/
+            return new PiercingProjectileMovement(speed); // Alyssa: Create new movement
+        }
         return null;
     }
 
