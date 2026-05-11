@@ -38,13 +38,14 @@ public class SpellBuilder
     // applies one random modifier to a spell
     public void ApplyRandomModifier(Spell spell)
     {
-        // pick random modifier id
-        string id = modifierIDs[Random.Range(0, modifierIDs.Count)];
+        string id;
 
-        // get modifier json
+        do
+        {
+            id = modifierIDs[Random.Range(0, modifierIDs.Count)];
+        }
+        while (spell.activeBehaviorMods.Contains(id));
         JObject modifier = dm.spellMap[id];
-
-        // apply modifier to spell 
         spell.ApplyModifier(modifier);
     }
 
