@@ -73,7 +73,6 @@ public class Spell
         return data?["icon"] != null ? (int)data["icon"] : 0;
     }
 
-    // damage hardcoded still for now
     public virtual int GetDamage()
     {
         // RPN damage expressions
@@ -203,14 +202,12 @@ public class Spell
         }
         catch
         {
-            Debug.LogWarning("Invalid modifier expression: " + expr);
 
             // unworking RPN of chaos modifier compensation
             if (expr == "1.5 wave 5 / +")
             {
                 return 1.5f + (GameManager.Instance.wave / 5f);
             }
-
             return 1;
         }
     }
@@ -220,114 +217,88 @@ public class Spell
         string name = mod["name"]?.ToString();
 
         Debug.Log("=== SPELL MODIFIER APPLIED ===");
+        Debug.Log("Modifier: " + (name ?? "UNKNOWN"));
 
-        if (name != null)
-            Debug.Log("Modifier: " + name);
-        else
-            Debug.Log("Modifier: UNKNOWN");
-
-
-        // stat modifiers
+        // stats
         if (mod["damage_multiplier"] != null)
         {
             float val = EvaluateModifier(mod["damage_multiplier"].ToString());
             damageMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
-            Debug.Log("-> Damage x" + val);
         }
 
         if (mod["mana_multiplier"] != null)
         {
             float val = EvaluateModifier(mod["mana_multiplier"].ToString());
             manaMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
-            Debug.Log("-> Mana x" + val);
         }
 
         if (mod["mana_adder"] != null)
         {
             float val = EvaluateModifier(mod["mana_adder"].ToString());
             manaMods.Add(new ValueModifier(ValueModifier.Type.ADD, val));
-            Debug.Log("-> Mana +" + val);
         }
 
         if (mod["speed_multiplier"] != null)
         {
             float val = EvaluateModifier(mod["speed_multiplier"].ToString());
             speedMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
-            Debug.Log("-> Speed x" + val);
         }
 
         if (mod["cooldown_multiplier"] != null)
         {
             float val = EvaluateModifier(mod["cooldown_multiplier"].ToString());
             cooldownMods.Add(new ValueModifier(ValueModifier.Type.MULTIPLY, val));
-            Debug.Log("-> Cooldown x" + val);
         }
-
-        // projectile override
 
         if (mod["projectile_trajectory"] != null)
         {
             trajectoryOverride = mod["projectile_trajectory"].ToString();
-            Debug.Log("-> Projectile behavior changed: " + trajectoryOverride);
         }
 
-        // behavior mods (the mods we wanna remove from possible pool while active)
+        // behavior reset rule 
+        if (mod["behavior"] != null && (bool)mod["behavior"])
+        {
+            activeBehaviorMods.Clear();
+            trajectoryOverride = "";
+            doubler = false;
+            splitter = false;
+        }
 
-        // homing
+        // behavior cases
+
         if (name == "homing")
         {
-            activeBehaviorMods.Remove("chaos");
-            activeBehaviorMods.Remove("homing");
-
             trajectoryOverride = "homing";
             activeBehaviorMods.Add("homing");
-
-            Debug.Log("-> Homing enabled");
         }
 
-        // chaos
-        if (name == "chaotic")
+        else if (name == "chaotic")
         {
-            activeBehaviorMods.Remove("homing");
-            activeBehaviorMods.Remove("chaos");
-
             trajectoryOverride = "spiraling";
             activeBehaviorMods.Add("chaos");
-
-            Debug.Log("-> Chaos enabled");
         }
 
-        // doubler
-        if (name == "doubled")
+        else if (name == "doubled")
         {
-            activeBehaviorMods.Remove("doubler");
             doubler = true;
             activeBehaviorMods.Add("doubler");
 
             if (mod["delay"] != null)
                 doublerDelay = EvaluateModifier(mod["delay"].ToString());
-
-            Debug.Log("-> Doubler enabled");
         }
 
-        // splitter
-        if (name == "split")
+        else if (name == "split")
         {
-            activeBehaviorMods.Remove("splitter");
             splitter = true;
             activeBehaviorMods.Add("splitter");
 
             if (mod["angle"] != null)
                 splitAngle = EvaluateModifier(mod["angle"].ToString());
-
-            Debug.Log("-> Splitter enabled");
         }
 
-        // piercing
-        if (name == "piercing")
+        else if (name == "piercing")
         {
             activeBehaviorMods.Add("piercing");
-            Debug.Log("-> Piercing enabled");
         }
     }
 }

@@ -45,13 +45,15 @@
        "description": "Increased damage and increased mana cost.",
        "icon": 7,
        "damage_multiplier": "1.5",
-       "mana_multiplier": "1.5"
+       "mana_multiplier": "1.5",
+       "behavior": false
    },
    "speed_amp": {
        "name": "speed-amplified",
        "description": "Faster projectile speed",
        "icon": 12,
-       "speed_multiplier": "1.75"
+       "speed_multiplier": "1.75",
+       "behavior": false
    },
    "doubler": {
        "name": "doubled",
@@ -59,21 +61,24 @@
        "icon": 17,
        "delay": "0.5",
        "mana_multiplier": "1.5",
-       "cooldown_multiplier": "1.5"
+       "cooldown_multiplier": "1.5",
+       "behavior": true
    },
    "splitter": {
        "name": "split",
        "description": "Spell is cast twice in slightly different directions; increased mana cost.",
        "icon": 1,
        "angle": "10",
-       "mana_multiplier": "1.5"
+       "mana_multiplier": "1.5",
+       "behavior": true
    },
    "chaos": {
        "name": "chaotic",
        "description": "Significantly increased damage, but projectile is spiraling.",
        "icon": 6,
        "damage_multiplier": "1.5 wave 5 / +",
-       "projectile_trajectory": "spiraling"
+       "projectile_trajectory": "spiraling",
+       "behavior": true
    },
    "homing": {
        "name": "homing",
@@ -81,13 +86,15 @@
        "icon": 10,
        "damage_multiplier": "0.75",
        "mana_adder": "10",
-       "projectile_trajectory": "homing"
+       "projectile_trajectory": "homing",
+       "behavior": true
    },
    "discount": { 
        "name": "discount",
        "description": "Reduce the mana cost of spells by 50%.",
        "icon": 11,
-       "mana_multiplier": "0.5"
+       "mana_multiplier": "0.5",
+       "behavior": false
    },
       "focus": { 
        "name": "focus",
@@ -95,7 +102,8 @@
        "icon": 3,
        "scale": 4,
        "damage_multiplier": "2",
-       "speed_multiplier": ".25"
+       "speed_multiplier": ".25",
+       "behavior": false
    },
    "piercing": { 
        "name": "piercing",
@@ -103,6 +111,7 @@
        "icon": 4,
        "damage_multiplier": "1.5",
        "mana_multiplier": "1.5",
-       "projectile_trajectory": "piercing" 
+       "projectile_trajectory": "piercing",
+       "behavior": true 
    }
 }

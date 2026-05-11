@@ -10,6 +10,8 @@ public class AcceptSpell : MonoBehaviour
         // ui stored
         PlayerController player = GameManager.Instance.player.GetComponent<PlayerController>();
         JObject reward = GameManager.Instance.pendingSpellReward;
+
+        
         Spell spell = player.spellcaster.spell;
 
         // applies mod effect
