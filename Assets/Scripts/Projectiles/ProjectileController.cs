@@ -44,6 +44,19 @@ public class ProjectileController : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void SetScale(float scale)
+    {
+        var col = GetComponent<Collider2D>();
+        if (col is CircleCollider2D circle)
+        {
+            circle.radius *= scale;
+        }
+        else if (col is BoxCollider2D box)
+        {
+            box.size *= scale;
+        }
+    }
+
     public void SetLifetime(float lifetime)
     {
         StartCoroutine(Expire(lifetime));

@@ -22,6 +22,7 @@ public class ProjectileManager : MonoBehaviour
         GameObject new_projectile = Instantiate(projectiles[which], where + direction.normalized*1.1f, Quaternion.Euler(0,0,Mathf.Atan2(direction.y, direction.x)*Mathf.Rad2Deg));
         new_projectile.GetComponent<ProjectileController>().movement = MakeMovement(trajectory, speed);
         new_projectile.GetComponent<ProjectileController>().OnHit += onHit;
+        new_projectile.GetComponent<ProjectileController>().SetScale(scale);
         new_projectile.transform.localScale *= scale;
     }
 
@@ -47,7 +48,7 @@ public class ProjectileManager : MonoBehaviour
         {
             return new SpiralingProjectileMovement(speed);
         }
-        /*if (name == "piercing")
+        /*if (name == "piercing")                           
         {
             return new PiercingProjectileMovement(speed);     <----- Alyssa: Create new movement
         }*/
