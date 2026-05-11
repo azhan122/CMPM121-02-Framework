@@ -130,7 +130,9 @@ public class EnemySpawner : MonoBehaviour
         SpellBuilder builder = new SpellBuilder();
 
         // store it
-        GameManager.Instance.pendingSpellReward = builder.GenerateRandomModifier();
+        Spell spell = GameManager.Instance.player.GetComponent<PlayerController>().spellcaster.spell;
+
+    GameManager.Instance.pendingSpellReward = builder.GenerateRandomModifier(spell);
 
 
         // count waves

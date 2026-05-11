@@ -96,7 +96,7 @@
        "mana_multiplier": "0.5",
        "behavior": false
    },
-      "focus": { 
+    "focus": { 
        "name": "focus",
        "description": "Reduce your speed by 75% but increase size and power by 50%.",
        "icon": 3,

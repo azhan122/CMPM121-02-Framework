@@ -252,16 +252,13 @@ public class Spell
 
         if (mod["projectile_trajectory"] != null)
         {
-            trajectoryOverride = mod["projectile_trajectory"].ToString();
-        }
+            // remove old trajectory modifiers
+            activeBehaviorMods.Remove("homing");
+            activeBehaviorMods.Remove("chaotic");
+            activeBehaviorMods.Remove("piercing");
 
-        // behavior reset rule 
-        if (mod["behavior"] != null && (bool)mod["behavior"])
-        {
-            activeBehaviorMods.Clear();
-            trajectoryOverride = "";
-            doubler = false;
-            splitter = false;
+            // apply new trajectory
+            trajectoryOverride = mod["projectile_trajectory"].ToString();
         }
 
         // behavior cases
@@ -275,7 +272,7 @@ public class Spell
         else if (name == "chaotic")
         {
             trajectoryOverride = "spiraling";
-            activeBehaviorMods.Add("chaos");
+            activeBehaviorMods.Add("chaotic");
         }
 
         else if (name == "doubled")
@@ -297,7 +294,8 @@ public class Spell
         }
 
         else if (name == "piercing")
-        {
+        {   
+            //trajectoryOverride = "piercing";   uncomment this after creating PiercingProjectileMovement(speed); and uncommenting in ProjectileManager
             activeBehaviorMods.Add("piercing");
         }
     }

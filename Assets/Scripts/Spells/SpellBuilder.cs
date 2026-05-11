@@ -44,18 +44,23 @@ public class SpellBuilder
         {
             id = modifierIDs[Random.Range(0, modifierIDs.Count)];
         }
-        while (spell.activeBehaviorMods.Contains(id));
+        while (spell.activeBehaviorMods.Contains(
+            dm.spellMap[id]["name"]?.ToString()
+        ));
         JObject modifier = dm.spellMap[id];
         spell.ApplyModifier(modifier);
     }
 
     // get one random modifier for reward UI
-    public JObject GenerateRandomModifier()
+    public JObject GenerateRandomModifier(Spell spell)
     {
-        // pick random modifier id
-        string id = modifierIDs[Random.Range(0, modifierIDs.Count)];
+        string id;
+        do
+        {
+            id = modifierIDs[Random.Range(0, modifierIDs.Count)];
+        }
+        while (spell.activeBehaviorMods.Contains(dm.spellMap[id]["name"]?.ToString()));
 
-        // return modifier json
         return dm.spellMap[id];
     }
 }
