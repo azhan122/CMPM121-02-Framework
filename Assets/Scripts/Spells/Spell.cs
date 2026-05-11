@@ -125,23 +125,29 @@ public class Spell
         float speed = ValueModifier.Apply(baseSpeed, speedMods);
         int sprite = proj?["sprite"] != null ? (int)proj["sprite"] : 0;
 
+        // change scale
+        float scale = 1f;
+        if (proj?["scale"] != null)
+        {
+            scale = float.Parse(proj["scale"].ToString());
+        }
+
         // tell projectile manager to create the projectile
-        GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, OnHit);
+        GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit);
 
         // splitter shoots second angled projectile
         if (splitter)
         {
             Vector3 splitDir = Quaternion.Euler(0, 0, splitAngle) * (target - where);
-            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, splitDir, speed, OnHit);
+            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, splitDir, speed, scale, OnHit);
         }
 
         // doubler shoots again after delay
         if (doubler)
         {
             yield return new WaitForSeconds(doublerDelay);
-            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, OnHit);
+            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit);
         }
-
         yield return new WaitForEndOfFrame();
     }
 

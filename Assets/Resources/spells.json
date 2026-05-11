@@ -50,7 +50,7 @@
    "speed_amp": {
        "name": "speed-amplified",
        "description": "Faster projectile speed",
-       "icon": 0,
+       "icon": 12,
        "speed_multiplier": "1.75"
    },
    "doubler": {
@@ -88,6 +88,14 @@
        "description": "Reduce the mana cost of spells by 50%.",
        "icon": 11,
        "mana_multiplier": "0.5"
+   },
+      "focus": { 
+       "name": "focus",
+       "description": "Reduce your speed by 75% but increase size and power by 50%.",
+       "icon": 3,
+       "scale": 4,
+       "damage_multiplier": "2",
+       "speed_multiplier": ".25"
    },
    "piercing": { 
        "name": "piercing",
