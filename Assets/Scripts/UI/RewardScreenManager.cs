@@ -11,6 +11,7 @@ public class RewardScreenManager : MonoBehaviour
 
     public PlayerController player; // Alyssa: Call player for setting post wave stats
     public Hittable statistics; // Alyssa: Call SetMaxHP later
+    public SpellCaster spell; // Alyssa: Call mana/mana regen/spell power
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {}
@@ -32,9 +33,17 @@ public class RewardScreenManager : MonoBehaviour
                 { "wave", GameManager.Instance.wave}
             };
             player.hp.SetMaxHP(RPNEvaluator.RPNEvaluator.Evaluate("95 wave 5 * +", vars));
-            
-            Debug.Log(player.hp.hp);
-            Debug.Log(player.hp.max_hp);
+            player.spellcaster.SetMana(RPNEvaluator.RPNEvaluator.Evaluate("90 wave 10 * +", vars)); // mana (SpellCaster)
+            player.spellcaster.SetMaRe(RPNEvaluator.RPNEvaluator.Evaluate("10 wave +", vars)); // mana regen
+            player.spellcaster.SetPow(RPNEvaluator.RPNEvaluator.Evaluate("wave 10 *", vars)); // spell power
+            //player.hp.SetMaxHP(RPNEvaluator.RPNEvaluator.Evaluate("5", vars)); // speed? always stays 5 though
+
+
+            /*Debug.Log(player.hp.hp);
+            Debug.Log(player.spellcaster.mana);
+            Debug.Log(player.spellcaster.spell_power);
+            Debug.Log(player.spellcaster.mana_reg);
+            Debug.Log(player.hp.max_hp);*/
 
 
             //Debug.Log(name);

@@ -43,4 +43,17 @@ public class SpellCaster
         yield break;
     }
 
+    public void SetMana(int mana) // Alyssa: Put mana_reg in a function to call in RewardScreenManager
+    {
+        this.mana = mana;
+    }
+    public void SetPow(int spell_power) // Alyssa: Put mana_reg in a function to call in RewardScreenManager
+    {
+        this.spell_power = spell_power;
+    }
+    public void SetMaRe(int mana_reg) // Alyssa: Put mana_reg in a function to call in RewardScreenManager
+    {
+        this.mana_reg = mana_reg;
+    }
+
 }
