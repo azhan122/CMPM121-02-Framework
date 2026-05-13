@@ -1,5 +1,6 @@
-using UnityEngine;
 using TMPro; // Alyssa: Place info in text mesh
+using UnityEngine;
+using System.Collections.Generic;
 
 public class RewardScreenManager : MonoBehaviour
 {
@@ -8,11 +9,11 @@ public class RewardScreenManager : MonoBehaviour
     public TextMeshProUGUI spellname; // Alyssa: Display spell name in UI text
     public TextMeshProUGUI spelldesc;
 
+    public PlayerController player; // Alyssa: Call player for setting post wave stats
+    public Hittable statistics; // Alyssa: Call SetMaxHP later
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    void Start() {}
 
     // Update is called once per frame
     void Update()
@@ -25,7 +26,18 @@ public class RewardScreenManager : MonoBehaviour
             var desc = GameManager.Instance.pendingSpellReward["description"];
             spelldesc.text = string.Format("Description: {0}", desc);
 
-            Debug.Log(name);
+
+            Dictionary<string, int> vars = new Dictionary<string, int>() // Alyssa: Set new stats
+            {
+                { "wave", GameManager.Instance.wave}
+            };
+            player.hp.SetMaxHP(RPNEvaluator.RPNEvaluator.Evaluate("95 wave 5 * +", vars));
+            
+            Debug.Log(player.hp.hp);
+            Debug.Log(player.hp.max_hp);
+
+
+            //Debug.Log(name);
             rewardUI.SetActive(true);
         }
         else

@@ -32,6 +32,8 @@ public class Spell
     public bool doubler = false;
     public bool splitter = false;
 
+    public bool piercing = false; // Alyssa: piercing shot
+
     // modifier settings
     public float doublerDelay = 0.5f;
     public float splitAngle = 10f;
@@ -132,21 +134,28 @@ public class Spell
         }
 
         // tell projectile manager to create the projectile
-        GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit);
+        GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit, false); // "false" at end is added piercing property
 
         // splitter shoots second angled projectile
         if (splitter)
         {
             Vector3 splitDir = Quaternion.Euler(0, 0, splitAngle) * (target - where);
-            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, splitDir, speed, scale, OnHit);
+            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, splitDir, speed, scale, OnHit, false);
         }
 
         // doubler shoots again after delay
         if (doubler)
         {
             yield return new WaitForSeconds(doublerDelay);
-            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit);
+            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit, false);
         }
+
+        if (piercing) // Alyssa: implementing piercing shot
+        {
+            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit, true);
+            // No bullet changes, just needs to change "on hit" behavior (keep going if enemy hit)
+        }
+
         yield return new WaitForEndOfFrame();
     }
 
@@ -293,12 +302,12 @@ public class Spell
                 splitAngle = EvaluateModifier(mod["angle"].ToString());
         }
 
-        /*else if (name == "piercing")
+        else if (name == "piercing")
         {
             piercing = true;
-            trajectoryOverride = "piercing"; // Alyssa: uncomment this after creating PiercingProjectileMovement(speed); and uncommenting in ProjectileManager
             activeBehaviorMods.Add("piercing");
-        }*/
+            //trajectoryOverride = "piercing"; // Alyssa: uncomment this after creating PiercingProjectileMovement(speed); and uncommenting in ProjectileManager
+        }
     }
 }
 

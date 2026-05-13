@@ -7,6 +7,7 @@ public class ProjectileController : MonoBehaviour
     public float lifetime;
     public event Action<Hittable,Vector3> OnHit;
     public ProjectileMovement movement;
+    public bool piercing; // If piercing property is true/false
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,6 +31,10 @@ public class ProjectileController : MonoBehaviour
             if (ec != null)
             {
                 OnHit(ec.hp, transform.position);
+                if (piercing) // Alyssa: If piercing active, do not despawn
+                {
+                    return;
+                }
             }
             else
             {
@@ -38,8 +43,8 @@ public class ProjectileController : MonoBehaviour
                 {
                     OnHit(pc.hp, transform.position);
                 }
+                // Alyssa: Put piercing check here if there will be enemies you want that can do piercing damage
             }
-
         }
         Destroy(gameObject);
     }
