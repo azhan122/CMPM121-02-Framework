@@ -110,7 +110,7 @@
        "description": "Allows spells to pass through enemies.",
        "icon": 4,
        "damage_multiplier": "1.5",
-       "mana_multiplier": "1.5",
+       "speed_multiplier": "1.5",
        "projectile_trajectory": "piercing",
        "behavior": true 
    }

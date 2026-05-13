@@ -134,26 +134,20 @@ public class Spell
         }
 
         // tell projectile manager to create the projectile
-        GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit, false); // "false" at end is added piercing property
+        GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit, piercing); // "false" at end is added piercing property
 
         // splitter shoots second angled projectile
         if (splitter)
         {
             Vector3 splitDir = Quaternion.Euler(0, 0, splitAngle) * (target - where);
-            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, splitDir, speed, scale, OnHit, false);
+            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, splitDir, speed, scale, OnHit, piercing);
         }
 
         // doubler shoots again after delay
         if (doubler)
         {
             yield return new WaitForSeconds(doublerDelay);
-            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit, false);
-        }
-
-        if (piercing) // Alyssa: implementing piercing shot
-        {
-            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit, true);
-            // No bullet changes, just needs to change "on hit" behavior (keep going if enemy hit)
+            GameManager.Instance.projectileManager.CreateProjectile(sprite, trajectory, where, target - where, speed, scale, OnHit, piercing);
         }
 
         yield return new WaitForEndOfFrame();
@@ -261,10 +255,13 @@ public class Spell
 
         if (mod["projectile_trajectory"] != null)
         {
-            // remove old trajectory modifiers
+            // remove old projectile behavior mods
             activeBehaviorMods.Remove("homing");
             activeBehaviorMods.Remove("chaotic");
             activeBehaviorMods.Remove("piercing");
+
+            // reset projectile-specific effects
+            piercing = false;
 
             // apply new trajectory
             trajectoryOverride = mod["projectile_trajectory"].ToString();
@@ -275,19 +272,19 @@ public class Spell
         if (name == "homing")
         {
             trajectoryOverride = "homing";
-            activeBehaviorMods.Add("homing");
+            activeBehaviorMods.Add(name);
         }
 
         else if (name == "chaotic")
         {
             trajectoryOverride = "spiraling";
-            activeBehaviorMods.Add("chaotic");
+            activeBehaviorMods.Add(name);
         }
 
         else if (name == "doubled")
         {
             doubler = true;
-            activeBehaviorMods.Add("doubler");
+            activeBehaviorMods.Add(name);
 
             if (mod["delay"] != null)
                 doublerDelay = EvaluateModifier(mod["delay"].ToString());
@@ -296,7 +293,7 @@ public class Spell
         else if (name == "split")
         {
             splitter = true;
-            activeBehaviorMods.Add("splitter");
+            activeBehaviorMods.Add(name);
 
             if (mod["angle"] != null)
                 splitAngle = EvaluateModifier(mod["angle"].ToString());
@@ -305,8 +302,7 @@ public class Spell
         else if (name == "piercing")
         {
             piercing = true;
-            activeBehaviorMods.Add("piercing");
-            //trajectoryOverride = "piercing"; // Alyssa: uncomment this after creating PiercingProjectileMovement(speed); and uncommenting in ProjectileManager
+            activeBehaviorMods.Add(name);
         }
     }
 }
